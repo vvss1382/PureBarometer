@@ -1,58 +1,40 @@
-plugins {
-    id("com.android.application") version "8.7.3" apply false
-    id("org.jetbrains.kotlin.android") version "2.0.21" apply false
-}
+name: Build APK
 
-org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
-android.useAndroidX=true
-kotlin.code.style=official
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "master" ]
 
-# Pure Barometer
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-Минималистичный офлайн-барометр для Android / Samsung Galaxy S25 Ultra.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-## Что делает
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
-- читает встроенный `Sensor.TYPE_PRESSURE`;
-- показывает давление в мм рт. ст.;
-- маленький виджет на рабочем столе;
-- плитка быстрых настроек в шторке;
-- нажатие на виджет или плитку делает новый замер;
-- при `SCREEN_ON` делает один замер, пока процесс приложения находится в памяти;
-- стрелка тренда: ↑ рост, ↓ падение, → без заметного изменения;
-- интернет, GPS, аккаунт, реклама и аналитика не используются.
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
 
-## Важно про SCREEN_ON
+      - name: Install Android SDK 35
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-Современный Android не разрешает принимать `ACTION_SCREEN_ON` через receiver, объявленный в AndroidManifest. Поэтому приложение регистрирует receiver динамически. Если Android выгрузил процесс приложения из памяти, автоматический замер при следующем включении экрана не гарантируется. Ручное обновление виджетом/плиткой работает независимо от этого. Постоянная foreground-служба намеренно не используется, чтобы не держать уведомление и не расходовать батарею.
+      - name: Install Gradle 8.9
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip
+          unzip -q gradle-8.9-bin.zip
 
-## GitHub Actions
+      - name: Build debug APK
+        run: ./gradle-8.9/bin/gradle :app:assembleDebug --stacktrace
 
-1. Создайте репозиторий GitHub.
-2. Загрузите содержимое этой папки в корень репозитория.
-3. Откройте **Actions → Build APK → Run workflow**.
-4. После сборки скачайте artifact **PureBarometer-debug**.
-5. Внутри будет `app-debug.apk`.
-
-## После установки
-
-1. Один раз откройте приложение.
-2. Нажмите **Добавить в шторку**.
-3. Для виджета: удерживайте пустое место рабочего стола → **Виджеты → Барометр**.
-
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-rootProject.name = "PureBarometer"
-include(":app")
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PureBarometer-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
