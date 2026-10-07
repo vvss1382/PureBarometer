@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <TextView
+        android:id="@+id/pressureValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="—"
+        android:textSize="44sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/pressureInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="мм рт. ст."
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/refreshButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Обновить" />
+
+    <Button
+        android:id="@+id/addTileButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Добавить в шторку" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Автообновление: один замер при включении экрана, пока приложение находится в памяти.\nРучное обновление: нажмите виджет или плитку."
+        android:textSize="14sp" />
+
+</LinearLayout>
