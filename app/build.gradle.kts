@@ -4,15 +4,19 @@ plugins {
 }
 
 android {
-    namespace = "..."
+    namespace = "kz.purebarometer"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "..."
-        minSdk = 26
+        applicationId = "kz.purebarometer"
+        minSdk = 31
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
+    }
+
+    buildFeatures {
+        viewBinding = false
     }
 
     compileOptions {
